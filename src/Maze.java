@@ -1,19 +1,22 @@
 import java.util.Random;
 
-public class Maze {
+class Maze {
 
     static private int[][] directions = {{2, 0}, {0, 2}, {-2, 0}, {0, -2}};
-    private int[][] map;
+    int[][] map;
     private Random rand;
-    private int size;
+    int size;
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+    private static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
 
-    public Maze(int size) {
+    Maze(int size) {
         map = new int[size * 2 + 1][size * 2 + 1];
         this.size = size;
         rand = new Random();
     }
 
-    public void generate() {
+    void generate() {
         int cellsLeft = size * size - 1;
 
         generateWalls(size);
@@ -28,15 +31,24 @@ public class Maze {
             }
             currentPosition = neighbour;
         }
+        setEnds();
+
     }
 
-    public void print() {
+    private void setEnds() {
+        map[1][0] = 2;
+        map[size * 2 - 1][size * 2] = 2;
+    }
+
+    void print() {
         for (int i = 0; i < size * 2 + 1; i++) {
             for (int j = 0; j < size * 2 + 1; j++) {
-                if (map[i][j] == 2 || map[i][j] == 3) {
+                if (map[i][j] == 4) {
+                    System.out.print(ANSI_GREEN_BACKGROUND + " " + ANSI_RESET);
+                } else if (map[i][j] == 2 || map[i][j] == 3) {
                     System.out.print(" ");
                 } else {
-                    System.out.print("@");
+                    System.out.print(ANSI_BLACK_BACKGROUND + " " + ANSI_RESET);
 
                 }
             }
@@ -44,7 +56,7 @@ public class Maze {
         }
     }
 
-    public void generateWalls(int size) {
+    private void generateWalls(int size) {
         for (int i = 0; i < size * 2 + 1; i += 2) {
             for (int j = 0; j < size * 2 + 1; j++) {
                 map[i][j] = 1;
@@ -53,7 +65,7 @@ public class Maze {
         }
     }
 
-    public void removeWall(Coordinates cell, Coordinates neighbour) {
+    private void removeWall(Coordinates cell, Coordinates neighbour) {
         if (cell.x - neighbour.x == -2) {
             map[cell.x + 1][cell.y] = 2;
         } else if (cell.x - neighbour.x == 2) {
@@ -67,15 +79,15 @@ public class Maze {
         map[neighbour.x][neighbour.y] = 2;
     }
 
-    public boolean cellVisited(Coordinates cell) {
+    private boolean cellVisited(Coordinates cell) {
         return map[cell.x][cell.y] != 0;
     }
 
-    public boolean cellAvailable(Coordinates neighbour) {
+    private boolean cellAvailable(Coordinates neighbour) {
         return (neighbour.x < size * 2 + 1) && (neighbour.y < size * 2 + 1) && neighbour.x > 0 && neighbour.y > 0;
     }
 
-    public Coordinates randomNeighbour(Coordinates cp) {
+    private Coordinates randomNeighbour(Coordinates cp) {
         Coordinates neighbour = getNextPosition(cp, directions[rand.nextInt(4)]);
         if (cellAvailable(neighbour)) {
             return neighbour;
@@ -84,7 +96,7 @@ public class Maze {
         }
     }
 
-    public Coordinates getNextPosition(Coordinates cp, int[] direction) {
+    Coordinates getNextPosition(Coordinates cp, int[] direction) {
         return new Coordinates(cp.x + direction[0], cp.y + direction[1]);
     }
 

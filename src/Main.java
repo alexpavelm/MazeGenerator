@@ -7,5 +7,10 @@ public class Main {
         Maze maze = new Maze(s.nextInt());
         maze.generate();
         maze.print();
+        System.out.println();
+        if (s.next().equals("solve")) {
+            Solver solver = new Solver();
+            solver.solve(maze);
+        }
     }
 }
