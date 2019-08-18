@@ -1,6 +1,8 @@
 ASCII java maze generator/solver using the Aldous-Broder algorithm for generating and DFS for solving.
 It creates a square size maze.
 
+I used black for empty spaces and white for walls.
+
 The matrix is N * N + 1 size, N being the input number.
 
 To solve a maze, input the text "solve".
